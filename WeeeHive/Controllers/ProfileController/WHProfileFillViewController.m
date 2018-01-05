@@ -221,6 +221,11 @@
     years=[NSMutableArray new];
     sharedObject=[WHSingletonClass sharedManager];
     
+    //    [[NSNotificationCenter defaultCenter] addObserver:self
+    //                                             selector:@selector(keyboardWasShown:)
+    //                                                 name:UIKeyboardDidShowNotification
+    //                                               object:nil];
+    
     
     [self.buttonHelpIn setImage:[UIImage imageNamed:@"box"] forState:UIControlStateNormal];
     [self customiseUI];
@@ -245,6 +250,7 @@
     //[typeArray removeAllObjects];
     temp=10;
     self.toolbar.hidden=YES;
+    self.navigationController.navigationBarHidden=NO;
     getCitySingletonId=[[WHSingletonClass sharedManager] singletonCity];
     getNeighbourhoodId=[[WHSingletonClass sharedManager] singletonNeighbourhoodId];
     [self serviceCallingForGettingState];
@@ -904,25 +910,38 @@
             [self serviceCallProfile];
         }
     }
-    
-    
-    
 }
+
+
+
+
+
 - (IBAction)buttonHelpInPressed:(id)sender {
     
     if (isFlag==0) {
+        
         isFlag=1;
         getHelpIn=@"Yes";
-        self.viewHelpInAs.hidden=NO;
-        self.viewSpecialisation.hidden=NO;
-        [self.buttonHelpIn setImage:[UIImage imageNamed:@"terms"] forState:UIControlStateNormal];
+        // Update UI in main thread.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.viewHelpInAs.hidden=NO;
+            self.viewSpecialisation.hidden=NO;
+            [self.buttonHelpIn setImage:[UIImage imageNamed:@"terms"] forState:UIControlStateNormal];
+        });
+    
     }
     else if (isFlag==1){
         isFlag=0;
         getHelpIn=@"No";
-        self.viewHelpInAs.hidden=YES;
-        self.viewSpecialisation.hidden=YES;
-        [self.buttonHelpIn setImage:[UIImage imageNamed:@"box"] forState:UIControlStateNormal];
+        
+        // Update UI in main thread.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.viewHelpInAs.hidden=YES;
+            self.viewSpecialisation.hidden=YES;
+            [self.buttonHelpIn setImage:[UIImage imageNamed:@"box"] forState:UIControlStateNormal];
+        });
+        
+        
     }
     
 }
@@ -1304,7 +1323,7 @@
                                                             preferredStyle:UIAlertControllerStyleActionSheet]; // 1
     UIAlertAction *firstAction = [UIAlertAction actionWithTitle:@"Camera"
                                                           style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-                                                          //    NSLog(@"You pressed button one");
+                                                              //    NSLog(@"You pressed button one");
                                                               
                                                               // Open the Camera if available.
                                                               if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
@@ -1323,7 +1342,7 @@
                                                           }]; // 2
     UIAlertAction *secondAction = [UIAlertAction actionWithTitle:@"Image Gallery"
                                                            style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-                                                              // NSLog(@"You pressed button two");
+                                                               // NSLog(@"You pressed button two");
                                                                
                                                                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                                                    [self pickImageOfSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
@@ -1333,7 +1352,7 @@
     
     UIAlertAction *thirdAction = [UIAlertAction actionWithTitle:@"Cancel"
                                                           style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-                                                             // NSLog(@"You pressed button two");
+                                                              // NSLog(@"You pressed button two");
                                                           }];
     
     [alert addAction:firstAction]; // 4
@@ -2644,43 +2663,51 @@ replacementString:(NSString *)string {
     return YES;
 }
 
--(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    return YES;
-}
-
-
-//- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
-//
-//    [self.view endEditing:YES];
+//-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
 //    return YES;
 //}
+//
+//
+////- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+////    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+////
+////    [self.view endEditing:YES];
+////    return YES;
+////}
+//
+//
+//- (void)keyboardDidShow:(NSNotification *)notification
+//{
+//    
+//    // Code to animate view down.
+//    [UIView animateWithDuration:0.5 animations:^{
+//        
+//        // Assign new frame to your view
+//        [self.viewSpecialisation setFrame:CGRectMake(30 + self.viewHelpInAs.frame.size.width,self.view.frame.size.height-49-heightView,self.viewSpecialisation.frame.size.width,30)];
+//    }];
+//}
+//
+//
+//- (void)keyboardWasShown:(NSNotification *)notification
+//{
+//    // Get the size of the keyboard.
+//    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+//    //Given size may not account for screen rotation
+//    heightView = MIN(keyboardSize.height,keyboardSize.width);
+//    
+//}
 
+#pragma mark  UINavigation
 
-- (void)keyboardDidShow:(NSNotification *)notification
-{
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     
-    // Code to animate view down.
-    [UIView animateWithDuration:0.5 animations:^{
-        
-        
-        // Assign new frame to your view
-        [self.viewSpecialisation setFrame:CGRectMake(30 + self.viewHelpInAs.frame.size.width,self.view.frame.size.height-49-heightView,self.viewSpecialisation.frame.size.width,30)];
-    }];
-}
-
-
-- (void)keyboardWasShown:(NSNotification *)notification
-{
-    // Get the size of the keyboard.
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    //Given size may not account for screen rotation
-    heightView = MIN(keyboardSize.height,keyboardSize.width);
+    if ([segue.identifier isEqualToString:@"profileToHomeSegueVC"]) {
+        WHHomeViewController *secondVC = segue.destinationViewController;
+        secondVC.value=1;
+    }
     
 }
-
-
 
 
 

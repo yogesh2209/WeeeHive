@@ -11,6 +11,6 @@
 @interface WHAddMembersFilterViewController : UIViewController
 
 @property (nonatomic,strong) NSString *getGroupId;
-
+@property (nonatomic,strong) NSString *getGroupName;
 
 @end

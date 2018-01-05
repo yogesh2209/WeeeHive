@@ -20,10 +20,13 @@
 #import "WHWeehiveDetailsViewController.h"
 #import "WHMessagesPushViewController.h"
 #import "WHHomeViewController.h"
+#import "WHYourWeehiveViewController.h"
 
 #import <AVFoundation/AVAudioPlayer.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import "WHHomeViewController.h"
+
+#import "IQKeyboardManager.h"
 
 
 @interface AppDelegate ()
@@ -41,6 +44,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [Fabric with:@[[Digits class]]];
+    
+     [[IQKeyboardManager sharedManager] setEnable:YES];
+    
   //  if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
   //  {
         
@@ -129,8 +135,10 @@
     NSString *deviceTokenString = [[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     deviceTokenString = [deviceTokenString stringByReplacingOccurrencesOfString:@" " withString:@""];
    
+    
     defaults = [NSUserDefaults standardUserDefaults];
     NSString *tokenString=[defaults objectForKey:@"TOKEN"];
+    
     
     
     if (tokenString.length!=0 && [deviceTokenString isEqualToString:tokenString]) {
@@ -206,6 +214,15 @@
             WHNotificationsViewController *someVC = (WHNotificationsViewController *) [mainStoryboard instantiateViewControllerWithIdentifier:@"notificationsStoryBoard"];
             [navVc pushViewController: someVC animated:YES];
         }
+        
+        //WEEEHIVE GROUP SCREEN
+        else if (tagValue == 10){
+            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
+            UINavigationController *navVc=(UINavigationController *) self.window.rootViewController;
+            WHYourWeehiveViewController *someVC = (WHYourWeehiveViewController *) [mainStoryboard instantiateViewControllerWithIdentifier:@"weeehiveScreenStoryboard"];
+            [navVc pushViewController: someVC animated:YES];
+        }
+        
        
         else{
             
@@ -216,6 +233,7 @@
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     //  NSLog(@"Did Fail to Register for Remote Notifications");
     //  NSLog(@"%@, %@", error, error.localizedDescription);
+    
     
 }
 - (void)applicationWillResignActive:(UIApplication *)application {

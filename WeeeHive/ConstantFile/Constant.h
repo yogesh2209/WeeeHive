@@ -13,7 +13,7 @@
 
 //temp url for me : schoofi.com/weehieve/yogesh/
 
-#define MAIN_URL                    @"http://weeehive.com/"
+#define MAIN_URL                    @"http://159.203.89.4/"
 #define POST_LOGIN                  @"json-wh-login.php"
 #define POST_REG                    @"json-wh-reg.php"
 #define POST_STATES                 @"json-wh-states.php"
@@ -97,10 +97,10 @@
 
 
 //URLs for Terms, Privacy policy, about and help.
-#define WHTERMS                     @"http://schoofi.com/weehieve/yogesh/terms.docx"
-#define WHPRIVACY                   @"http://schoofi.com/weehieve/yogesh/privacy.docx"
-#define WHABOUT                     @"http://schoofi.com/weehieve/yogesh/about.docx"
-#define WHHELP                      @"http://schoofi.com/weehieve/yogesh/help.docx"
+#define WHTERMS                     @"terms.docx"
+#define WHPRIVACY                   @"privacy.docx"
+#define WHABOUT                     @"about.docx"
+#define WHHELP                      @"help.docx"
 
 
 
@@ -146,7 +146,8 @@
 
 
 
-
+// REPORTING CONTENT INAPPROPRIATE URL
+#define POST_REPORT_CONTENT         @"json-wh-report.php"
 
 
 

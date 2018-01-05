@@ -21,4 +21,7 @@
 
 @property (nonatomic,assign) int indicator;
 
+
+
+
 @end

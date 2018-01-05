@@ -28,7 +28,15 @@
 #import "AFHTTPRequestOperationManager.h"
 #import "AFHTTPSessionManager.h"
 #import "AFNetworkReachabilityManager.h"
+#import "WHNeghborImageFullScreenViewController.h"
 
+#import "JSONHTTPClient.h"
+#import "ASNetworkAlertClass.h"
+#import "SVProgressHUD.h"
+#import "ASNetworkAlertClass.h"
+#import "Constant.h"
+#import "WHSingletonClass.h"
+#import "WHMessageModel.h"
 
 //Framework
 #import <AssetsLibrary/AssetsLibrary.h>
@@ -63,6 +71,14 @@
     int heightView;
     CGRect newFrame;
     NSUserDefaults *defaults;
+    
+    NSString *gettedFirstName;
+    NSString *gettedLastName;
+    NSString *tableName;
+    NSString *getName;
+    NSString *gettedContentId;
+    NSString *gettedImageUrl;
+  
 }
 
 @property (strong, nonatomic) IBOutlet UIView *viewDisplay;
@@ -76,6 +92,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *buttonCamera;
 @property (strong, nonatomic) IBOutlet UITextField *textFieldMessage;
 
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *barButtonReport;
 
 @end
 
@@ -85,7 +102,7 @@
     [super viewDidLoad];
     [self customizeUI];
     [self getValues];
-    [self addTapGesture];
+  //  [self addTapGesture];
     [self getSingletonValues];
     defaults=[NSUserDefaults standardUserDefaults];
     sharedObject=[WHSingletonClass sharedManager];
@@ -98,12 +115,16 @@
     [self.tableViewCommentsList addSubview:refreshControl];
     gettedDeviceId=[[WHSingletonClass sharedManager] deviceId];
     
-    // Do any additional setup after loading the view.
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification
-                                               object:nil];
+//    // Do any additional setup after loading the view.
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(keyboardWasShown:)
+//                                                 name:UIKeyboardDidShowNotification
+//                                               object:nil];
 
+    gettedFirstName=[[WHSingletonClass sharedManager] singletonFirstName];
+    gettedLastName=[[WHSingletonClass sharedManager] singletonLastName];
+    tableName=@"Table Name: neigh_times";
+    getName=[NSString stringWithFormat:@"%@ %@",gettedFirstName,gettedLastName];
     // Do any additional setup after loading the view.
 }
 
@@ -115,6 +136,8 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
+   
+    gettedContentId=[NSString stringWithFormat:@"Post Id: %@",self.postId];
     self.imageViewProfilePic.image=self.getImagePath;
     
     if (self.indicator==1) {
@@ -134,17 +157,17 @@
   //  self.viewMessage.frame = newFrame;
 }
 
-// Tap Gesture
-- (void)addTapGesture {
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapImageGestureCalled:)];
-    [self.tableViewCommentsList addGestureRecognizer:tapGesture];
-}
-
-// UITapGestureRecognizer Selector
-- (void)tapImageGestureCalled:(UITapGestureRecognizer *)sender {
-    
-    [self.textFieldMessage resignFirstResponder];
-}
+//// Tap Gesture
+//- (void)addTapGesture {
+//    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapImageGestureCalled:)];
+//    [self.tableViewCommentsList addGestureRecognizer:tapGesture];
+//}
+//
+//// UITapGestureRecognizer Selector
+//- (void)tapImageGestureCalled:(UITapGestureRecognizer *)sender {
+//    
+//    [self.textFieldMessage resignFirstResponder];
+//}
 
 #pragma mark  UITextField Delegates
 
@@ -579,6 +602,21 @@
     
 }
 
+#pragma mark  UITableView Delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    profileInfoModel=profileData.profile[indexPath.row];
+    
+    if (profileInfoModel.reply_image.length==0) {
+        
+    }
+    else{
+        gettedImageUrl=profileInfoModel.reply_image;
+        [self performSegueWithIdentifier:@"neghCellImageSizeSegueVC" sender:nil];
+    }
+}
+
 - (void) serviceCallingForAddingComment{
     
     [self getCurrentDate];
@@ -663,67 +701,141 @@
     
 }
 
--(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    return YES;
-}
-
-
-//- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
-//    [UIView animateWithDuration:0.5 animations:^{
-//        
-//        newFrame = self.viewMessage.frame;
-//        newFrame.origin.y = newFrame.origin.y + 258;
-//        self.viewMessage.frame = newFrame;
-//        
-//    } completion:nil];
-//    [self.view endEditing:YES];
+//-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
 //    return YES;
 //}
-
-
-- (void)keyboardDidShow:(NSNotification *)notification
-{
-
-    // Code to animate view down.
-    [UIView animateWithDuration:0.5 animations:^{
- 
-//    // Assign new frame to your view
-   [self.viewMessage setFrame:CGRectMake(20,self.view.frame.size.height-298,self.view.frame.size.width-40,30)];
-
-    int heightTableView =(self.view.frame.size.height)-(self.viewDisplay.frame.size.height+16  + 30 + 8 + heightView);
-  
-    self.tableViewCommentsList.frame = CGRectMake(20,170,self.view.frame.size.width-40,heightTableView-64);
-    
-        messageLabel.hidden=YES;
-
-    }];
-    
-}
-
-- (void)keyboardWasShown:(NSNotification *)notification
-{
-    // Get the size of the keyboard.
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    //Given size may not account for screen rotation
-    heightView = MIN(keyboardSize.height,keyboardSize.width);
-
-}
+//
+//
+////- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+////    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+////    [UIView animateWithDuration:0.5 animations:^{
+////        
+////        newFrame = self.viewMessage.frame;
+////        newFrame.origin.y = newFrame.origin.y + 258;
+////        self.viewMessage.frame = newFrame;
+////        
+////    } completion:nil];
+////    [self.view endEditing:YES];
+////    return YES;
+////}
+//
+//
+//- (void)keyboardDidShow:(NSNotification *)notification
+//{
+//
+//    // Code to animate view down.
+//    [UIView animateWithDuration:0.5 animations:^{
+// 
+////    // Assign new frame to your view
+//   [self.viewMessage setFrame:CGRectMake(20,self.view.frame.size.height-298,self.view.frame.size.width-40,30)];
+//
+//    int heightTableView =(self.view.frame.size.height)-(self.viewDisplay.frame.size.height+16  + 30 + 8 + heightView);
+//  
+//    self.tableViewCommentsList.frame = CGRectMake(20,170,self.view.frame.size.width-40,heightTableView-64);
+//    
+//        messageLabel.hidden=YES;
+//
+//    }];
+//    
+//}
+//
+//- (void)keyboardWasShown:(NSNotification *)notification
+//{
+//    // Get the size of the keyboard.
+//    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+//    //Given size may not account for screen rotation
+//    heightView = MIN(keyboardSize.height,keyboardSize.width);
+//
+//}
 
 #pragma mark  UIAlertView Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if ([tokenStatus.error isEqualToString:@"0"]) {
-        
-        NSString *string=@"0";
-        [defaults setObject:string forKey:@"LOGGED"];
-        [self.navigationController popToRootViewControllerAnimated:YES];
-        
+    if (buttonIndex==0) {
+        if ([tokenStatus.error isEqualToString:@"0"]) {
+            
+            NSString *string=@"0";
+            [defaults setObject:string forKey:@"LOGGED"];
+            [self.navigationController popToRootViewControllerAnimated:YES];
+            
+        }
+        else{
+            [self serviceCallingForReportingContent];
+        }
     }
+    
+   
 }
 
+
+- (IBAction)barButtonReportPressed:(id)sender {
+      [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Are you sure you want to report this content as inappropriate?" delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No", nil]show];
+}
+
+//service calling for reporting content as inappropriate
+- (void) serviceCallingForReportingContent{
+    
+    if ([[ASNetworkAlertClass sharedManager] isInternetActive]) {
+        
+        // Show Progress bar.
+        [SVProgressHUD showWithStatus:@"Loading" maskType:SVProgressHUDMaskTypeBlack];
+        
+        NSString *details = [NSString stringWithFormat:@"u_id=%@&u_name=%@&table_name=%@&content_id=%@",getUserId,getName,tableName,gettedContentId];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // Code executed in the background
+            
+            [JSONHTTPClient postJSONFromURLWithString:[NSString stringWithFormat:@"%@%@", MAIN_URL,POST_REPORT_CONTENT]
+                                           bodyString:details
+                                           completion:^(NSDictionary *json, JSONModelError *err)
+             {
+                 
+              
+                 
+                 messageStatus=[[WHMessageModel alloc]initWithDictionary:json error:&err];
+                 
+                 if ([messageStatus.Msg isEqualToString:@"0"]){
+                     [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Something went wrong, please try again later!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+                 }
+                 else if ([messageStatus.Msg isEqualToString:@"1"]){
+                     [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Your response has been received! Thank you for the same!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+                     
+                 }
+                 else{
+                     
+                 }
+                 
+                 
+                 // Update UI in main thread.
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     
+                     // Hide Progress bar.
+                     [SVProgressHUD dismiss];
+                 });
+                 
+             }];
+            
+        });
+        
+    }
+    
+    
+    else {
+        [[ASNetworkAlertClass sharedManager] showInternetErrorAlertWithMessage];
+    }
+    
+}
+
+#pragma mark  UINavigation
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if ([segue.identifier isEqualToString:@"neghCellImageSizeSegueVC"]) {
+        WHNeghborImageFullScreenViewController *secondVC = segue.destinationViewController;
+        secondVC.getImageString=gettedImageUrl;
+    }
+}
 
 
 @end

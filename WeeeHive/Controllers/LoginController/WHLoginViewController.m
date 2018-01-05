@@ -187,6 +187,7 @@
                                            bodyString:details
                                            completion:^(NSDictionary *json, JSONModelError *err)
              {
+            
                
                  messageStatus=[[WHMessageModel alloc]initWithDictionary:json error:&err];
                  

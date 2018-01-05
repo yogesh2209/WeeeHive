@@ -76,7 +76,7 @@
     //NSString *localUrl = @"http://schoofi.com/terms.docx";
     //NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:localUrl]];
     
-   NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:WHTERMS]];
+   NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",MAIN_URL,WHTERMS]]];
     [self.webView loadRequest:request];
 }
 

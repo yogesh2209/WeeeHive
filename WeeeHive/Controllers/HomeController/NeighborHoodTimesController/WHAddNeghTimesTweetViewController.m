@@ -121,6 +121,7 @@
     getFirstName=[[WHSingletonClass sharedManager] singletonFirstName];
     getLastName=[[WHSingletonClass sharedManager] singletonLastName];
     getImageString=[[WHSingletonClass sharedManager] singletonImage];
+    
     getCityId=[[WHSingletonClass sharedManager] singletonCity];
     getNeighbourhoodId=[[WHSingletonClass sharedManager] singletonNeighbourhoodId];
     
@@ -302,7 +303,6 @@
 
 
 - (void) serviceCallSubmittingTweet{
-    
     
     getMessage=self.textViewMessage.text;
     

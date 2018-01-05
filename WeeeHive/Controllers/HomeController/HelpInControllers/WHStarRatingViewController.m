@@ -87,7 +87,6 @@
 //service calling for rating
 - (void) serviceCallingForGettingRating{
     
-    
     getRatedPersonId=self.gettedUserId;
     
     if ([[ASNetworkAlertClass sharedManager] isInternetActive]) {

@@ -47,6 +47,11 @@
     int indicator;
     NSUserDefaults *defaults;
     
+    NSString *getFirstName;
+    NSString *getLastName;
+    NSString *tableName;
+    NSString *getName;
+    NSString *gettedContentId;
     
     
 }
@@ -66,6 +71,10 @@
     gettedDeviceId=[[WHSingletonClass sharedManager] deviceId];
     getCityId=[[WHSingletonClass sharedManager] singletonCity];
     getNeighbourhoodId=[[WHSingletonClass sharedManager] singletonNeighbourhoodId];
+    getFirstName=[[WHSingletonClass sharedManager] singletonFirstName];
+    getLastName=[[WHSingletonClass sharedManager] singletonLastName];
+    tableName=@"Table Name: poll";
+    getName=[NSString stringWithFormat:@"%@ %@",getFirstName,getLastName];
     
     countArray=[NSMutableArray new];
     self.tableViewPollList.tableFooterView = [UIView new];
@@ -105,8 +114,6 @@
     
    
 }
-
-
 
 - (void)refresh {
     
@@ -283,6 +290,11 @@
         cell.labelTotalVotes.text=[NSString stringWithFormat:@"Total votes: %i",(x+y)];
         cell.buttonDisLike.tag=indexPath.row;
         [cell.buttonDisLike addTarget:self action:@selector(buttonDislikeClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    cell.buttonReport.tag=indexPath.row;
+    [cell.buttonReport addTarget:self action:@selector(buttonReportClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
         cell.buttonLike.tag=indexPath.row;
         [cell.buttonLike addTarget:self action:@selector(buttonLikeClick:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -311,6 +323,15 @@
     
     return  cell;
 }
+
+- (void)buttonReportClick:(id)sender{
+    UIButton *senderButton=(UIButton *)sender;
+    pollListInfoModel=pollListData.polls[senderButton.tag];
+    gettedContentId=[NSString stringWithFormat:@"Poll Id: %@",pollListInfoModel.poll_id];
+    [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Are you sure you want to report this content as inappropriate?" delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No", nil]show];
+
+}
+
 -(void)buttonDislikeClick:(id)sender{
     indicator=2;
     UIButton *senderButton=(UIButton *)sender;
@@ -473,7 +494,7 @@
         }
         
     
-    return 10+ heightName + 21  + 21 + 18;
+    return 15 + heightName + 21  + 21 + 20;
     
 }
 
@@ -483,19 +504,80 @@
     [self performSegueWithIdentifier:@"addPollSegueVC" sender:nil];
 }
 
+//service calling for reporting content as inappropriate
+- (void) serviceCallingForReportingContent{
+    
+    if ([[ASNetworkAlertClass sharedManager] isInternetActive]) {
+        
+        // Show Progress bar.
+        [SVProgressHUD showWithStatus:@"Loading" maskType:SVProgressHUDMaskTypeBlack];
+        
+        NSString *details = [NSString stringWithFormat:@"u_id=%@&u_name=%@&table_name=%@&content_id=%@",getUserId,getName,tableName,gettedContentId];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // Code executed in the background
+            
+            [JSONHTTPClient postJSONFromURLWithString:[NSString stringWithFormat:@"%@%@", MAIN_URL,POST_REPORT_CONTENT]
+                                           bodyString:details
+                                           completion:^(NSDictionary *json, JSONModelError *err)
+             {
+                 
+                 
+                 
+                 messageStatus=[[WHMessageModel alloc]initWithDictionary:json error:&err];
+                 
+                 if ([messageStatus.Msg isEqualToString:@"0"]){
+                     [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Something went wrong, please try again later!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+                 }
+                 else if ([messageStatus.Msg isEqualToString:@"1"]){
+                     [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Your response has been received! Thank you for the same!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+                     
+                 }
+                 else{
+                     
+                 }
+                 
+                 
+                 // Update UI in main thread.
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     
+                     
+                     // Hide Progress bar.
+                     [SVProgressHUD dismiss];
+                 });
+                 
+             }];
+            
+        });
+        
+    }
+    
+    
+    else {
+        [[ASNetworkAlertClass sharedManager] showInternetErrorAlertWithMessage];
+    }
+    
+}
+
+
 #pragma mark  UIAlertView Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if ([tokenStatus.error isEqualToString:@"0"]) {
-
-                NSString *string=@"0";
-                [defaults setObject:string forKey:@"LOGGED"];
-                [self.navigationController popToRootViewControllerAnimated:YES];
-                
-   
-        
+    if (buttonIndex==0) {
+        if ([tokenStatus.error isEqualToString:@"0"]) {
+            
+            NSString *string=@"0";
+            [defaults setObject:string forKey:@"LOGGED"];
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        }
+        else{
+            //service to be hit for sending this as report
+            [self serviceCallingForReportingContent];
+        }
     }
+    
+    
 }
 
 @end

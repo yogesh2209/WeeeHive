@@ -53,6 +53,7 @@
     NSString *getUserId;
     NSString *gettedDeviceId;
     
+    
 }
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *barButtonLogout;
@@ -82,13 +83,15 @@
 
 - (void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    self.navigationItem.rightBarButtonItem=self.barButtonLogout;
+    self.navigationController.navigationBarHidden=NO;
     
     if (self.temp==1) {
          self.navigationItem.hidesBackButton=YES;
     }
     else{
         self.navigationItem.hidesBackButton=NO;
-        self.navigationItem.rightBarButtonItem=nil;
+       // self.navigationItem.rightBarButtonItem=nil;
     }
     
    
@@ -217,7 +220,10 @@
                          sharedObject.singletonInterestTwo=each.interest2;
                          sharedObject.singletonInterestThree=each.interest3;
                          sharedObject.singletonRegistrationDate=each.date;
+                         [defaults setObject:each.status forKey:@"STATUS"];
                      }
+                     
+                     
 
                      [self performSegueWithIdentifier:@"codeToHomeSegueVC" sender:nil];
                  }

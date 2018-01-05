@@ -11,5 +11,7 @@
 @interface WHCouponFlyerOnlyViewController : UIViewController
 
 @property (nonatomic,strong) NSString *getText;
+@property (nonatomic,strong) NSString *getContentId;
+
 
 @end

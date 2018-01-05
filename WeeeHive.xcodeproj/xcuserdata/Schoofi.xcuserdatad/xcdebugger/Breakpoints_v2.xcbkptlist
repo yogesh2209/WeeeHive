@@ -73,54 +73,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WeeeHive/Controllers/HomeController/HelpInControllers/WHHelpInViewController.m"
-            timestampString = "486287097.232049"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "468"
-            endingLineNumber = "468"
-            landmarkName = "-serviceCallingForFilterHelpIn"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__55-[WHHelpInViewController serviceCallingForFilterHelpIn]_block_invoke_2"
-                  moduleName = "WeeeHive"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Schoofi/Desktop/WeeeHive/WeeeHive/Controllers/HomeController/HelpInControllers/WHHelpInViewController.m"
-                  timestampString = "486385978.616421"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "470"
-                  endingLineNumber = "470"
-                  offsetFromSymbolStart = "1084">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__55-[WHHelpInViewController serviceCallingForFilterHelpIn]_block_invoke_3"
-                  moduleName = "WeeeHive"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Schoofi/Desktop/WeeeHive/WeeeHive/Controllers/HomeController/HelpInControllers/WHHelpInViewController.m"
-                  timestampString = "486385978.616656"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "470"
-                  endingLineNumber = "470"
-                  offsetFromSymbolStart = "24">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WeeeHive/Controllers/HomeController/SettingsController/WHEditCredentialsViewController.m"
             timestampString = "486287097.232049"
             startingColumnNumber = "9223372036854775807"
@@ -137,29 +89,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WeeeHive/Controllers/HomeController/NeighborHoodTimesController/WHNeighborTimesViewController.m"
-            timestampString = "486287097.232049"
+            filePath = "WeeeHive/Controllers/HomeController/SettingsController/WHHelpViewController.m"
+            timestampString = "491228065.920478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "364"
-            endingLineNumber = "364"
-            landmarkName = "-collectionView:layout:sizeForItemAtIndexPath:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WeeeHive/Controllers/HomeController/NeighborHoodTimesController/WHNeighborTimesViewController.m"
-            timestampString = "486287097.232049"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "342"
-            endingLineNumber = "342"
-            landmarkName = "-collectionView:layout:sizeForItemAtIndexPath:"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
+            landmarkName = "-serviceCallingForSubmittingFeedback"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -111,7 +111,7 @@
     // Build your regular UIBarButtonItem with Custom View
     UIImage *image1 = [UIImage imageNamed:@"bell"];
     UIButton *button1 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button1.frame = CGRectMake(0,0,20, 20);
+    button1.frame = CGRectMake(0,0,25, 25);
     [button1 addTarget:self
                 action:@selector(buttonPress1:)
       forControlEvents:UIControlEventTouchDown];
@@ -122,7 +122,7 @@
     // Build your regular UIBarButtonItem with Custom View
     UIImage *image2 = [UIImage imageNamed:@"messagechats"];
     UIButton *button2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button2.frame = CGRectMake(0,0,20, 20);
+    button2.frame = CGRectMake(0,0,25, 25);
     [button2 addTarget:self
                 action:@selector(buttonPress2:)
       forControlEvents:UIControlEventTouchDown];
@@ -132,7 +132,7 @@
     // Build your regular UIBarButtonItem with Custom View
     UIImage *image3 = [UIImage imageNamed:@"friendrequest"];
     UIButton *button3 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button3.frame = CGRectMake(0,0,20, 20);
+    button3.frame = CGRectMake(0,0,25, 25);
     [button3 addTarget:self
                 action:@selector(buttonPress3:)
       forControlEvents:UIControlEventTouchDown];
@@ -184,7 +184,6 @@
 }
 - (void)compareDates{
     
-    
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"yyyy-MM-dd"];
     NSDate *startDate = [dateFormat dateFromString:getRegistrationDate];
@@ -197,7 +196,7 @@
                                                          options:NSCalendarWrapComponents];
     
     
-    if ([components day] > 7) {
+    if ([components day] > 21) {
         
         if ([gettedIsAddressEntered isEqualToString:@"Yes"] || [gettedIsAddressEntered isEqualToString:@"yes"] || [gettedIsAddressEntered isEqualToString:@"YES"]) {
             status=@"5";
@@ -217,6 +216,7 @@
         if ([gettedIsAddressEntered isEqualToString:@"No"] || [gettedIsAddressEntered isEqualToString:@"no"] || [gettedIsAddressEntered isEqualToString:@"NO"]) {
             
             if (self.value==1) {
+
                 [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Please go to settings and update your address now, othwerwise your connection would be lost." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
             }
             else{
@@ -443,6 +443,14 @@
                  sharedObject.singletonInterestOne=getInterest1;
                  sharedObject.singletonInterestTwo=getInterest2;
                  sharedObject.singletonInterestThree=getInterest3;
+                 
+                 [defaults setObject:getInterest1 forKey:@"INT1"];
+                 [defaults setObject:getInterest3 forKey:@"INT2"];
+                 [defaults setObject:getInterest3 forKey:@"INT3"];
+                 [defaults setObject:getOccupation forKey:@"OCCUPATION"];
+                 [defaults setObject:getImageString forKey:@"IMAGE"];
+             
+                 
                  //  getImageString=[[WHSingletonClass sharedManager]singletonImage];
                  [self getValues];
                  
@@ -495,6 +503,7 @@
                      else{
                          gettedUserStatus=userStatus.status;
                          sharedObject.singletonStatus=userStatus.status;
+                         [defaults setObject:gettedUserStatus forKey:@"STATUS"];
                          
                          if ([gettedUserStatus isEqualToString:@"4"]) {
                              

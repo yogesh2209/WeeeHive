@@ -19,7 +19,6 @@
 #import "UIImageView+WebCache.h"
 #import "WHPushNotificationsListDetailsModel.h"
 #import "WHPushNotificationsListModel.h"
-
 #import "WHCouponsViewController.h"
 #import "WHPulsePollViewController.h"
 #import "WHNotificationsViewController.h"
@@ -28,6 +27,7 @@
 #import "WHYourNeighborhoodMsgsChattingViewController.h"
 #import "WHWeehiveDetailsViewController.h"
 #import "WHMessagesPushViewController.h"
+#import "WHYourWeehiveViewController.h"
 
 @interface WHNotificationsViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
@@ -54,8 +54,7 @@
     [super viewDidLoad];
     [self customizeUI];
     [self getValues];
-   
-    gettedDeviceId=[[WHSingletonClass sharedManager] deviceId];
+   gettedDeviceId=[[WHSingletonClass sharedManager] deviceId];
     self.tableViewNotificationsList.tableFooterView = [UIView new];
     refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -305,13 +304,22 @@
     }
     //ACTION FRIEND REQUEST PUSH OR ACTION GROUP REQUEST PUSH
     else if (tagValue == 8 || tagValue==9){
-//        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
-//        UIWindow* window = [[UIApplication sharedApplication] keyWindow];
-//        UINavigationController *navVc=(UINavigationController *) window.rootViewController;
-//        WHNotificationsViewController *someVC = (WHNotificationsViewController *) [mainStoryboard instantiateViewControllerWithIdentifier:@"notificationsStoryBoard"];
-//        [navVc pushViewController: someVC animated:YES];
-//        //[self presentViewController:someVC animated:YES completion:nil];
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
+        UIWindow* window = [[UIApplication sharedApplication] keyWindow];
+        UINavigationController *navVc=(UINavigationController *) window.rootViewController;
+        WHRequestsPushViewController *someVC = (WHRequestsPushViewController *) [mainStoryboard instantiateViewControllerWithIdentifier:@"requestsStoryBoard"];
+        [navVc pushViewController: someVC animated:YES];
+        //[self presentViewController:someVC animated:YES completion:nil];
     }
+    //WEEEHIVE GROUP SCREEN
+    else if (tagValue == 10){
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
+        UIWindow* window = [[UIApplication sharedApplication] keyWindow];
+        UINavigationController *navVc=(UINavigationController *) window.rootViewController;
+        WHYourWeehiveViewController *someVC = (WHYourWeehiveViewController *) [mainStoryboard instantiateViewControllerWithIdentifier:@"weeehiveScreenStoryboard"];
+        [navVc pushViewController: someVC animated:YES];
+    }
+
     
     else{
         

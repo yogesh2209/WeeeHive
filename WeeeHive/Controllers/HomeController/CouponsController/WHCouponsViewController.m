@@ -301,8 +301,6 @@
         
         [self performSegueWithIdentifier:@"couponTextImageSegueVC" sender:nil];
     }
-    
-    
 }
 #pragma mark  UICollectionViewDelegateFlowLayout
 
@@ -322,6 +320,7 @@
         WHCouponsDetailsViewController *secondVC = segue.destinationViewController;
         secondVC.getImage = cell.imageViewCoupon.image;
         secondVC.imageString=profileInfoModel.coupon_image;
+        secondVC.getContentId=profileInfoModel.id;
     }
     else if ([segue.identifier isEqualToString:@"couponTextImageSegueVC"]){
         
@@ -330,11 +329,13 @@
         secondVC.getImage = cell.imageViewCoupon.image;
         secondVC.imageString=profileInfoModel.coupon_image;
         secondVC.getTextFlyer=profileInfoModel.text;
+        secondVC.getContentId=profileInfoModel.id;
     }
     else if ([segue.identifier isEqualToString:@"CouponTextOnlySegueVC"]){
         
         WHCouponFlyerOnlyViewController *secondVC = segue.destinationViewController;
         secondVC.getText=profileInfoModel.text;
+        secondVC.getContentId=profileInfoModel.id;
     }
     else if ([segue.identifier isEqualToString:@"addCouponSegueVC"]){
         

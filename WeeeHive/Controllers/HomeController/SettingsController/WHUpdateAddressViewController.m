@@ -20,7 +20,7 @@
 #import "WHProfileDetailsModel.h"
 #import "WHProfileModel.h"
 #import "WHHomeViewController.h"
-
+#import "WHLoginCodeViewController.h"
 
 @interface WHUpdateAddressViewController (){
     
@@ -48,9 +48,10 @@
     NSInteger indexValue;
     NSString *gettedStatus;
     NSString *status;
-    
+    NSString *getRegistrationDate;
     NSUserDefaults *defaults;
     
+    NSString *currentDateString;
 }
 
 @property (strong, nonatomic) IBOutlet UIView *viewCity;
@@ -72,6 +73,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self customiseUI];
+    getRegistrationDate=[[[WHSingletonClass sharedManager] singletonRegistrationDate] substringToIndex:10];
     defaults=[NSUserDefaults standardUserDefaults];
     neighourhoodArray=[NSMutableArray new];
     cityArray=[NSMutableArray new];
@@ -92,20 +94,15 @@
     self.textFieldAddress.layer.cornerRadius=2.0f;
     self.textFieldAddress.layer.masksToBounds=YES;
     self.textFieldAddress.layer.borderWidth=0.5f;
-    
     self.textFieldPincode.backgroundColor=[UIColor clearColor];
     self.textFieldPincode.layer.borderColor=[UIColor lightGrayColor].CGColor;
     self.textFieldPincode.layer.cornerRadius=2.0f;
     self.textFieldPincode.layer.masksToBounds=YES;
     self.textFieldPincode.layer.borderWidth=0.5f;
-    
-    
-    
     self.textFieldCity.backgroundColor=[UIColor clearColor];
     self.textFieldCity.layer.borderColor=[UIColor clearColor].CGColor;
     self.textFieldNeighbourhood.backgroundColor=[UIColor clearColor];
     self.textFieldNeighbourhood.layer.borderColor=[UIColor clearColor].CGColor;
-    
     self.viewCity.backgroundColor=[UIColor clearColor];
     self.viewCity.layer.borderColor=[UIColor lightGrayColor].CGColor;
     self.viewCity.layer.borderWidth=0.5f;
@@ -138,8 +135,9 @@
     self.pickerView.hidden=YES;
     self.toolbar.hidden=YES;
     self.buttonUpdate.hidden=NO;
+    [self getCurrentDate];
+    self.navigationController.navigationBarHidden=NO;
     [self serviceCallingForGettingAddress];
-   
 }
 
 -(void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -157,9 +155,9 @@
         [self.textFieldCity becomeFirstResponder];
     }
     else if (theTextField == self.textFieldCity) {
-         [theTextField resignFirstResponder];
+        [theTextField resignFirstResponder];
     }
-      return YES;
+    return YES;
 }
 
 //service calling for getting address entered by user.
@@ -211,16 +209,16 @@
                              getNegId=each.neighborhood_id;
                          }
                          
-
+                         
+                     }
+                     
+                     
                  }
                  
                  
-                 }
+                 // Hide Progress bar.
+                 [SVProgressHUD dismiss];
                  
-                 
-                     // Hide Progress bar.
-                     [SVProgressHUD dismiss];
-              
                  
              }];
             
@@ -359,13 +357,16 @@
                      
                  }
                  else if ([messageStatus.Msg isEqualToString:@"1"]){
-                     [self serviceCallingForUpdatingStatus];
-                     [[[UIAlertView alloc]initWithTitle:@"Alert" message:@"Address updated successfully!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+                 [defaults setObject:@"yes" forKey:@"ADD_ENTERED"];
+                sharedObject.singletonIsAddressEntered=@"yes";
+                     [self compareDates];
+                    
+                    
                  }
                  
-                     // Hide Progress bar.
-                     [SVProgressHUD dismiss];
-               
+                 // Hide Progress bar.
+                 [SVProgressHUD dismiss];
+                 
                  
              }];
             
@@ -379,11 +380,58 @@
     }
 }
 
+// method for calculating current date.
+- (void) getCurrentDate{
+    
+    NSDate *date = [NSDate date];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc]init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd"];
+    // convert it to a string
+    NSString *dateString = [dateFormat stringFromDate:date];
+    currentDateString=dateString;
+    
+}
+
+
+
+- (void)compareDates{
+    
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd"];
+    NSDate *startDate = [dateFormat dateFromString:getRegistrationDate];
+    NSDate *endDate = [dateFormat dateFromString:currentDateString];
+    
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *components = [gregorianCalendar components:NSCalendarUnitDay
+                                                        fromDate:startDate
+                                                          toDate:endDate
+                                                         options:NSCalendarWrapComponents];
+    
+    
+    if ([components day] > 7) {
+        status=@"5";
+         [self serviceCallingForUpdatingStatus];
+        self.indicator=1;
+        //send him to verification code screen, else send him to home screen/ previous screen.
+         [[[UIAlertView alloc]initWithTitle:@"Alert" message:@"Address updated successfully!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+    }
+    else{
+      status=@"2";
+        self.indicator=2;
+        [self serviceCallingForUpdatingStatus];
+         [[[UIAlertView alloc]initWithTitle:@"Alert" message:@"Address updated successfully!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+    }
+    
+}
+
+
 
 //service calling for updatingStatus
 - (void) serviceCallingForUpdatingStatus{
     
-    status=@"5";
+    
+    [defaults setObject:status forKey:@"STATUS"];
+    sharedObject.singletonStatus=status;
     
     if ([[ASNetworkAlertClass sharedManager] isInternetActive]) {
         
@@ -423,9 +471,9 @@
             self.pickerView.frame = CGRectMake(0 , y, self.pickerView.frame.size.width, pvHeight);
         } completion:nil];
         self.pickerView.hidden=NO;
-      
+        
         self.buttonUpdate.hidden=YES;
-      
+        
         self.pickerView.showsSelectionIndicator=YES;
         
         [self.pickerView reloadAllComponents];
@@ -443,14 +491,14 @@
         
     }
     
-
+    
 }
 
 
 - (IBAction)buttonNeighbourhoodPressed:(id)sender {
     
     var=2;
-   
+    
     if (temp==1) {
         
         if (isClicked==0 || isCityClicked==1) {
@@ -465,7 +513,7 @@
             } completion:nil];
             self.pickerView.hidden=NO;
             self.buttonUpdate.hidden=YES;
-          
+            
             self.pickerView.showsSelectionIndicator=YES;
             self.toolbar.hidden=NO;
             [self.pickerView reloadAllComponents];
@@ -478,7 +526,7 @@
             self.pickerView.hidden=YES;
             
             self.buttonUpdate.hidden=NO;
-           
+            
             self.toolbar.hidden=YES;
         }
         
@@ -488,7 +536,7 @@
         [[[UIAlertView alloc]initWithTitle:@"Alert" message:@"Please select city first" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
     }
     
-
+    
 }
 
 
@@ -500,7 +548,7 @@
     }
     else{
         [[[UIAlertView alloc]initWithTitle:@"Alert" message:@"All fields are mandatory, please fill all the fields" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
-
+        
     }
     
 }
@@ -511,7 +559,7 @@
         
         temp=1;
         isClicked=0;
-      
+        
         cityInfoModel=cityData.city[indexValue];
         self.textFieldCity.text=cityInfoModel.city;
         getCityId=cityInfoModel.id;
@@ -535,7 +583,7 @@
         isCityClicked=1;
         self.toolbar.hidden=YES;
     }
-
+    
 }
 
 #pragma mark  UIPickerView DataSource
@@ -557,7 +605,7 @@
     else {
         return [neighourhoodArray count];
     }
-   
+    
 }
 
 //title for each row.
@@ -590,13 +638,31 @@
         
         [self performSegueWithIdentifier:@"updateAddressToCodeSegueVC" sender:nil];
     }
+    else if (self.indicator==2){
+        sharedObject.singletonIsLoggedIn=0;
+        NSString *string=@"0";
+        [defaults setObject:string forKey:@"LOGGED"];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
     else{
         sharedObject.singletonIsLoggedIn=0;
         NSString *string=@"0";
         [defaults setObject:string forKey:@"LOGGED"];
         [self.navigationController popToRootViewControllerAnimated:YES];
-       // [self.navigationController popViewControllerAnimated:YES];
+        // [self.navigationController popViewControllerAnimated:YES];
     }
+}
+
+#pragma mark  UINavigation
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    
+    if ([segue.identifier isEqualToString:@"updateAddressToCodeSegueVC"]) {
+        WHLoginCodeViewController *secondVC = segue.destinationViewController;
+        secondVC.temp=1;
+    }
+    
+   
 }
 
 @end

@@ -164,6 +164,8 @@
                                            bodyString:details
                                            completion:^(NSDictionary *json, JSONModelError *err)
              {
+              
+                 NSLog(@"%@",json);
                
                  tokenStatus=[[WHTokenErrorModel alloc]initWithDictionary:json error:&err];
                  messageStatus=[[WHMessageModel alloc]initWithDictionary:json error:&err];

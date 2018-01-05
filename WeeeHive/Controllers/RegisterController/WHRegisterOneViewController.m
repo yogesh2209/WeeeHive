@@ -585,7 +585,7 @@
         
         if (self.textFieldFirstName.text.length!=0 && self.TextFieldLastName.text.length!=0 && self.textFieldEmail.text.length!=0 && self.textFieldPassword.text.length!=0 && self.textFieldConfirmPassword.text.length!=0 && self.textFieldMobile.text.length!=0 && self.textFieldCity.text.length!=0 && self.textFieldNeighborhood.text.length!=0) {
             
-            if (self.textFieldPassword.text == self.textFieldConfirmPassword.text) {
+            if ([self.textFieldPassword.text isEqualToString:[NSString stringWithFormat:@"%@", self.textFieldConfirmPassword.text]]) {
                 [self getCurrentDate];
                 sharedObject.singletonRegistrationDate=currentDateString;
                 

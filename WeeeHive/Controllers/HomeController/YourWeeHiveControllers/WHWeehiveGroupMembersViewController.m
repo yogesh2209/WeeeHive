@@ -43,8 +43,15 @@
     NSString *gettedFirstName;
     NSString *gettedLastName;
     NSString *gettedImageString;
+   
+    NSString *tableName;
+    NSString *getName;
+    NSString *gettedContentId;
+    
+    
 }
 
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *barButtonReport;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *barButtonAddFriends;
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewGroupPic;
 @property (weak, nonatomic) IBOutlet UITableView *tableViewGroupMembers;
@@ -63,14 +70,15 @@
     [self customizeUI];
     defaults=[NSUserDefaults standardUserDefaults];
     sharedObject=[WHSingletonClass sharedManager];
-    
     gettedDeviceId=[[WHSingletonClass sharedManager] deviceId];
     getUserId=[[WHSingletonClass sharedManager]singletonUserId];
     getToken=[[WHSingletonClass sharedManager]singletonToken];
-    
     gettedFirstName=[[WHSingletonClass sharedManager]singletonFirstName];
     gettedLastName=[[WHSingletonClass sharedManager]singletonLastName];
     gettedImageString=[[WHSingletonClass sharedManager]singletonImage];
+ 
+    tableName=@"Table Naem : wee_group";
+    getName=[NSString stringWithFormat:@"%@ %@",gettedFirstName,gettedLastName];
     
     //self.tableViewGroupMembers.tableFooterView = [UIView new];
     refreshControl = [[UIRefreshControl alloc] init];
@@ -431,6 +439,7 @@
         
         WHFriendListToAddGroupViewController *secondVC = segue.destinationViewController;
         secondVC.getGroupId=gettedGroupId;
+        secondVC.getGroupName=self.getGroupName;
     }
 }
 
@@ -443,17 +452,89 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if ([tokenStatus.error isEqualToString:@"0"]) {
+    if (buttonIndex==0) {
+        if ([tokenStatus.error isEqualToString:@"0"]) {
+            
+            NSString *string=@"0";
+            [defaults setObject:string forKey:@"LOGGED"];
+            [self.navigationController popToRootViewControllerAnimated:YES];
+            
+        }
+        else{
+            
+            [self serviceCallingForReportingContent];
+        }
+    }
+}
+
+//service calling for reporting content as inappropriate
+- (void) serviceCallingForReportingContent{
+    
+    
+    gettedContentId=[NSString stringWithFormat:@"Group Id: %@",gettedGroupId];
+    
+    if ([[ASNetworkAlertClass sharedManager] isInternetActive]) {
         
-        NSString *string=@"0";
-        [defaults setObject:string forKey:@"LOGGED"];
-        [self.navigationController popToRootViewControllerAnimated:YES];
+        // Show Progress bar.
+        [SVProgressHUD showWithStatus:@"Loading" maskType:SVProgressHUDMaskTypeBlack];
+        
+        NSString *details = [NSString stringWithFormat:@"u_id=%@&u_name=%@&table_name=%@&content_id=%@",getUserId,getName,tableName,gettedContentId];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // Code executed in the background
+            
+            [JSONHTTPClient postJSONFromURLWithString:[NSString stringWithFormat:@"%@%@", MAIN_URL,POST_REPORT_CONTENT]
+                                           bodyString:details
+                                           completion:^(NSDictionary *json, JSONModelError *err)
+             {
+                 
+              
+                 
+                 messageStatus=[[WHMessageModel alloc]initWithDictionary:json error:&err];
+                 
+                 if ([messageStatus.Msg isEqualToString:@"0"]){
+                     [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Something went wrong, please try again later!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+                 }
+                 else if ([messageStatus.Msg isEqualToString:@"1"]){
+                     [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Your response has been received! Thank you for the same!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+                     
+                 }
+                 else{
+                     
+                 }
+                 
+                 
+                 // Update UI in main thread.
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     
+                     
+                     // Hide Progress bar.
+                     [SVProgressHUD dismiss];
+                 });
+                 
+             }];
+            
+        });
         
     }
     
+    
+    else {
+        [[ASNetworkAlertClass sharedManager] showInternetErrorAlertWithMessage];
+    }
+    
 }
+
+
 - (IBAction)buttonRequestJoinGroupPressed:(id)sender {
+    
     [self serviceCallingForSendingRequest];
+}
+
+- (IBAction)barButtonReportPressed:(id)sender {
+    
+    [[[UIAlertView alloc] initWithTitle:@"Alert" message:@"Are you sure you want to report this content as inappropriate?" delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No", nil]show];
+
 }
 
 @end

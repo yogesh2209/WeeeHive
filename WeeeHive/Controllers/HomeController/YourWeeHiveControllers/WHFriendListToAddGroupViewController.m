@@ -42,6 +42,12 @@
      NSString *gettedDeviceId;
     UIRefreshControl *refreshControl;
     UILabel *messageLabel;
+    
+    NSString *gettedFirstName;
+    NSString *gettedLastName;
+    NSString *gettedImage;
+    NSString *gettedGroupName;
+    
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *buttonAdd;
@@ -141,12 +147,16 @@
     
     getUserId=[[WHSingletonClass sharedManager] singletonUserId];
     getToken=[[WHSingletonClass sharedManager]singletonToken];
+    gettedFirstName=[[WHSingletonClass sharedManager]singletonFirstName];
+    gettedLastName=[[WHSingletonClass sharedManager]singletonLastName];
+    gettedImage=[[WHSingletonClass sharedManager]singletonImage];
     
 }
 
 -(void) getValueLastScreen{
     
     gettedGroupId=self.getGroupId;
+    gettedGroupName=self.getGroupName;
     
 }
 
@@ -299,6 +309,12 @@
     
     neghProfileInfoModel.group_id=self.getGroupId;
     neghProfileInfoModel.count=(int) finalCount;
+    neghProfileInfoModel.group_name=gettedGroupName;
+    neghProfileInfoModel.first_name=gettedFirstName;
+    neghProfileInfoModel.last_name=gettedLastName;
+    neghProfileInfoModel.image=gettedImage;
+    
+    
     //LAZY LOADING.
     NSString *final_Url = [NSString stringWithFormat:@"%@%@", MAIN_URL,neghProfileInfoModel.image];
     [cell.imageViewProfilePic sd_setImageWithURL:[NSURL URLWithString:final_Url] placeholderImage:[UIImage imageNamed:@"blacktransparent"]];

@@ -14,5 +14,6 @@
 @property (nonatomic,strong) NSString *imageString;
 @property (nonatomic,strong) NSString *getTextFlyer;
 
+@property (nonatomic,strong) NSString *getContentId;
 
 @end

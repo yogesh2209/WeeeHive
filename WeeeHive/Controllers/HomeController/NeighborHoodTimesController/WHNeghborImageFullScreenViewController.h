@@ -10,4 +10,6 @@
 
 @interface WHNeghborImageFullScreenViewController : UIViewController
 
+@property (nonatomic,strong) NSString *getImageString;
+
 @end

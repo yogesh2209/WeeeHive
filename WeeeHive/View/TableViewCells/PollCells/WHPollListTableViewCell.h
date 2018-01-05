@@ -26,4 +26,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *buttonLike;
 
+@property (strong, nonatomic) IBOutlet UIButton *buttonReport;
+
+
 @end

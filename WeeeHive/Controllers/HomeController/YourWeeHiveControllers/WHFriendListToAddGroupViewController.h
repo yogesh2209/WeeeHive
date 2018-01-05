@@ -12,5 +12,6 @@
 
 @property (nonatomic,strong) NSString *getGroupId;
 @property (nonatomic,assign) int getIndicatorValue;
+@property (nonatomic,strong) NSString *getGroupName;
 
 @end

@@ -29,9 +29,6 @@
 #import "AFNetworkReachabilityManager.h"
 
 
-
-
-
 //Framework
 #import <AssetsLibrary/AssetsLibrary.h>
 
@@ -62,6 +59,7 @@
     BOOL isPhotoSelected;
     
     NSUserDefaults *defaults;
+   
     
     
     
@@ -426,6 +424,7 @@
             [[[UIAlertView alloc]initWithTitle:@"Alert" message:@"Weehive created successfully, please add members now" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
             for (WHYourWeehiveDetailsModel *each in weehiveData.group) {
                 getGroupId=each.group_id;
+                getGroupName=each.group_name;
             }
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -473,10 +472,12 @@
         WHFriendListToAddGroupViewController *secondVC = segue.destinationViewController;
         secondVC.getGroupId=getGroupId;
         secondVC.getIndicatorValue=1;
+        secondVC.getGroupName=getGroupName;
     }
     else{
         WHAddMembersFilterViewController *secondVC = segue.destinationViewController;
         secondVC.getGroupId=getGroupId;
+         secondVC.getGroupName=getGroupName;
     }
 }
 

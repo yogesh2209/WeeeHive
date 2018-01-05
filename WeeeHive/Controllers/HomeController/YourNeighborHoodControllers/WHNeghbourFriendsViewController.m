@@ -132,7 +132,7 @@
 //    self.navigationItem.titleView = titleView;
 //    [titleView sizeToFit];
 //    
-    [self.buttonTop setTitle:[NSString stringWithFormat:@"%@ %@",self.firstName,self.lastName] forState:UIControlStateNormal];
+    [self.buttonTop setTitle:[NSString stringWithFormat:@"%@ %@'s Circle",self.firstName,self.lastName] forState:UIControlStateNormal];
 
     
     [self.buttonTop setTintColor:[UIColor blackColor]];

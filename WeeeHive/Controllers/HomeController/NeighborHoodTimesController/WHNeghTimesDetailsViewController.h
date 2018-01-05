@@ -22,4 +22,6 @@
 @property (nonatomic,assign) int indicator;
 
 
+@property (nonatomic,strong) NSString *getImageStringUrl;
+
 @end

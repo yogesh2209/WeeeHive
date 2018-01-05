@@ -12,5 +12,6 @@
 
 @property (nonatomic,strong) UIImage *getImage;
 @property (nonatomic,strong) NSString *imageString;
+@property (nonatomic,strong) NSString *getContentId;
 
 @end

@@ -63,11 +63,10 @@
     }
 }
 
-
 - (void)loadWebView {
     
     [self.activityIndicator startAnimating];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:WHABOUT]];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",MAIN_URL,WHABOUT]]];
     [self.webView loadRequest:request];
 }
 

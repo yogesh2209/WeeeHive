@@ -269,7 +269,7 @@
             cell.labelOptions.text=[NSString stringWithFormat:@"Age: %@",variable];
         }
         else{
-            cell.labelOptions.text=[NSString stringWithFormat:@"Age: %@ years",ageBracket];
+            cell.labelOptions.text=[NSString stringWithFormat:@"Age: %@",ageBracket];
         }
     }
     else if (indexPath.row==2){
@@ -277,7 +277,7 @@
             cell.labelOptions.text=[NSString stringWithFormat:@"Living for: %@",variable];
         }
         else{
-            cell.labelOptions.text=[NSString stringWithFormat:@"Living for: %@ years",getLivingFor];
+            cell.labelOptions.text=[NSString stringWithFormat:@"Living for: %@",getLivingFor];
         }
     }
     else if (indexPath.row==3){

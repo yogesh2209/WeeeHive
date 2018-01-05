@@ -73,7 +73,7 @@
     NSUInteger unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond;
     NSDateComponents *components = [calendar components:unitFlags fromDate:startD toDate:endD options:0];
     NSInteger year  = [components year];
-  ageValue= year;
+    ageValue= year;
  
     //code for age
     tempString = self.age;

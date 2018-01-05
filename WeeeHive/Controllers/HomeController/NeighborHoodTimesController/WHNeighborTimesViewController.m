@@ -195,9 +195,7 @@
                                            bodyString:details
                                            completion:^(NSDictionary *json, JSONModelError *err)
              {
-                 
-
-                 
+                                  
                  tokenStatus=[[WHTokenErrorModel alloc]initWithDictionary:json error:&err];
                  messageStatus=[[WHMessageModel alloc]initWithDictionary:json error:&err];
                  profileData=[[WHProfileModel alloc]initWithDictionary:json error:&err];
@@ -551,6 +549,9 @@
         secondVC.postedById=profileInfoModel.user_id;
         secondVC.getImageString=cell.imageViewTweetPic.image;
         secondVC.indicator=1;
+        secondVC.getImageStringUrl=profileInfoModel.tweet_image;
+        
+        
     }
     else if ([segue.identifier isEqualToString:@"neghtimesOnlyTextSegueVC"]){
         
@@ -565,7 +566,6 @@
         secondVC.postedById=profileInfoModel.user_id;
         secondVC.indicator=1;
         
-    
     }
     else if ([segue.identifier isEqualToString:@"addTweetSegueVC"]){
         

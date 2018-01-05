@@ -38,6 +38,10 @@
     WHTokenErrorModel *tokenStatus;
     WHMessageModel *messageStatus;
     WHSingletonClass *sharedObject;
+    NSString *gettedFirstName;
+    NSString *gettedLastName;
+    NSString *gettedImage;
+    NSString *gettedGroupName;
     
     
     NSUserDefaults *defaults;
@@ -76,7 +80,6 @@
     IBOutlet UITableView *tableViewObjectCollege;
 }
 @property (strong, nonatomic) IBOutlet UIToolbar *toolBar;
-
 @property (strong, nonatomic) IBOutlet UILabel *labelDisplayAge;
 @property (strong, nonatomic) IBOutlet UITextField *textFieldAge;
 @property (strong, nonatomic) IBOutlet UIView *viewAge;
@@ -146,6 +149,7 @@
 - (void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     gettedGroupId=self.getGroupId;
+    gettedGroupName=self.getGroupName;
     self.pickerView.hidden=YES;
     self.tableViewCollege.hidden=YES;
     self.tableViewSchool.hidden=YES;
@@ -206,6 +210,9 @@
     
     userId=[[WHSingletonClass sharedManager]singletonUserId];
     token=[[WHSingletonClass sharedManager]singletonToken];
+    gettedFirstName=[[WHSingletonClass sharedManager]singletonFirstName];
+    gettedLastName=[[WHSingletonClass sharedManager]singletonLastName];
+    gettedImage=[[WHSingletonClass sharedManager]singletonImage];
 }
 
 //set title
@@ -1160,7 +1167,7 @@
         // Show Progress bar.
         [SVProgressHUD showWithStatus:@"Loading" maskType:SVProgressHUDMaskTypeBlack];
         
-        NSString *details = [NSString stringWithFormat:@"user_id=%@&token=%@&origin=%@&origin_city=%@&school=%@&college=%@&interest1=%@&interest2=%@&interest3=%@&work_interest=%@&occupation=%@&device_id=%@&min_age=%@&max_age=%@&group_id=%@",userId,token,getStateId,getCityId,getSchoolId,getCollegeId,codeInterest1,codeInterest2,codeInterest3,getWorkInterestId,getOccupationId,gettedDeviceId,getMinimumAge,getMaximumAge,gettedGroupId];
+        NSString *details = [NSString stringWithFormat:@"user_id=%@&token=%@&origin=%@&origin_city=%@&school=%@&college=%@&interest1=%@&interest2=%@&interest3=%@&work_interest=%@&occupation=%@&device_id=%@&min_age=%@&max_age=%@&group_id=%@&group_name=%@&first_name=%@&last_name=%@&image=%@",userId,token,getStateId,getCityId,getSchoolId,getCollegeId,codeInterest1,codeInterest2,codeInterest3,getWorkInterestId,getOccupationId,gettedDeviceId,getMinimumAge,getMaximumAge,gettedGroupId,gettedGroupName,gettedFirstName,gettedLastName,gettedImage];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             // Code executed in the background
@@ -1169,9 +1176,7 @@
                                            bodyString:details
                                            completion:^(NSDictionary *json, JSONModelError *err)
              {
-                 
-
-                 
+            
                  tokenStatus=[[WHTokenErrorModel alloc]initWithDictionary:json error:&err];
                  messageStatus=[[WHMessageModel alloc]initWithDictionary:json error:&err];
                  //  profileData=[[WHProfileModel alloc]initWithDictionary:json error:&err];

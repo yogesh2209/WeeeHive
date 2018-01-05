@@ -250,10 +250,10 @@
     [self addImageTapGesture];
     
     // Do any additional setup after loading the view.
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(keyboardWasShown:)
+//                                                 name:UIKeyboardDidShowNotification
+//                                               object:nil];
     
     //  [self.textFieldCollege addTarget:self action:@selector(textFieldDidChange:)forControlEvents:UIControlEventEditingChanged];
     
@@ -270,7 +270,7 @@
     self.tableViewSchoolList.hidden=YES;
     self.pickerView.hidden=YES;
     self.viewHelpIn.hidden=NO;
-    // self.viewHelpInAs.hidden=NO;
+    self.viewHelpInAs.hidden=NO;
     self.viewInterestOne.hidden=NO;
     self.viewInterestThree.hidden=NO;
     self.viewCity.hidden=NO;
@@ -807,25 +807,34 @@
                              
                          }
                          
-                         if ([each.help_in isEqualToString:@"No"] || [each.help_in isEqualToString:@"no"] || [each.help_in isEqualToString:@"NO"]) {
+                         
+                        if ([each.help_in isEqualToString:@"No"] || [each.help_in isEqualToString:@"no"] || [each.help_in isEqualToString:@"NO"]) {
                              
-                             //  [self.buttonHelpIn setImage:[UIImage imageNamed:@"box"] forState:UIControlStateNormal];
-                             isFlag=0;
-                             //  [btn setBackgroundImage:buttonImage forState:UIControlStateNormal];
-                             [self.buttonHelpIn setBackgroundImage:[UIImage imageNamed:@"box"] forState:UIControlStateNormal];
-                             self.viewHelpIn.hidden=NO;
-                             self.viewHelpInAs.hidden=YES;
-                             self.viewSpecialisation.hidden=YES;
-                         }
+                            
+                             // Update UI in main thread.
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 isFlag=0;
+                                 [self.buttonHelpIn setBackgroundImage:[UIImage imageNamed:@"box"] forState:UIControlStateNormal];
+                                 self.viewHelpIn.hidden=NO;
+                                 self.viewHelpInAs.hidden=YES;
+                                 self.viewSpecialisation.hidden=YES;
+                              
+                             });
+                             
+                        }
                          else if ([each.help_in isEqualToString:@"Yes"] || [each.help_in isEqualToString:@"yes"] || [each.help_in isEqualToString:@"YES"]){
                              
-                             //  [self.buttonHelpIn setImage:[UIImage imageNamed:@"terms"] forState:UIControlStateNormal];
+                             // Update UI in main thread.
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 [self.buttonHelpIn setBackgroundImage:[UIImage imageNamed:@"terms"] forState:UIControlStateNormal];
+                                 isFlag=1;
+                                 self.viewHelpIn.hidden=NO;
+                                 self.viewHelpInAs.hidden=NO;
+                                 self.viewSpecialisation.hidden=NO;
+                             });
                              
-                             [self.buttonHelpIn setBackgroundImage:[UIImage imageNamed:@"terms"] forState:UIControlStateNormal];
-                             isFlag=1;
-                             self.viewHelpIn.hidden=NO;
-                             self.viewHelpInAs.hidden=NO;
-                             self.viewSpecialisation.hidden=NO;
+                             
+                             
                              
                          }
                          else{
@@ -2652,31 +2661,31 @@ replacementString:(NSString *)string {
 
 
 
--(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    return YES;
-}
-
-- (void)keyboardDidShow:(NSNotification *)notification
-{
-    
-    // Code to animate view down.
-    [UIView animateWithDuration:0.5 animations:^{
-        
-        // Assign new frame to your view
-        [self.viewSpecialisation setFrame:CGRectMake(30 + self.viewHelpInAs.frame.size.width,self.view.frame.size.height-49-heightView,self.viewSpecialisation.frame.size.width,30)];
-        
-    }];
-}
-
-- (void)keyboardWasShown:(NSNotification *)notification
-{
-    // Get the size of the keyboard.
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    //Given size may not account for screen rotation
-    heightView = MIN(keyboardSize.height,keyboardSize.width);
-    
-}
+//-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+//    return YES;
+//}
+//
+//- (void)keyboardDidShow:(NSNotification *)notification
+//{
+//    
+//    // Code to animate view down.
+//    [UIView animateWithDuration:0.5 animations:^{
+//        
+//        // Assign new frame to your view
+//        [self.viewSpecialisation setFrame:CGRectMake(30 + self.viewHelpInAs.frame.size.width,self.view.frame.size.height-49-heightView,self.viewSpecialisation.frame.size.width,30)];
+//        
+//    }];
+//}
+//
+//- (void)keyboardWasShown:(NSNotification *)notification
+//{
+//    // Get the size of the keyboard.
+//    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+//    //Given size may not account for screen rotation
+//    heightView = MIN(keyboardSize.height,keyboardSize.width);
+//    
+//}
 
 
 
